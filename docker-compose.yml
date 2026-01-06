@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: auto_db
+    environment:
+      POSTGRES_USER: auto
+      POSTGRES_PASSWORD: auto_pass
+      POSTGRES_DB: auto_market
+    ports:
+      - "5432:5432"
+    volumes:
+      - auto_db_data:/var/lib/postgresql/data
+
+volumes:
+  auto_db_data:
