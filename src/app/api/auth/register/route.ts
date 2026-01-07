@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSession, hashPassword, setSessionCookie } from "@/lib/auth";
+import { getFirebaseAdminAuth } from "@/lib/firebase-admin";
 
 export async function POST(req: Request) {
   try {
@@ -9,10 +10,13 @@ export async function POST(req: Request) {
     const phone = body.phone ? String(body.phone).trim() : null;
     const name = body.name ? String(body.name).trim() : null;
     const password = body.password ? String(body.password) : "";
+    const firebaseIdToken = body.firebaseIdToken
+      ? String(body.firebaseIdToken).trim()
+      : null;
 
-    if (!email && !phone) {
+    if (!phone) {
       return NextResponse.json(
-        { error: "Укажи email или телефон" },
+        { error: "Укажи телефон" },
         { status: 400 }
       );
     }
@@ -23,11 +27,34 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!firebaseIdToken) {
+      return NextResponse.json(
+        { error: "Подтвердите телефон кодом" },
+        { status: 400 }
+      );
+    }
+
+    const adminAuth = getFirebaseAdminAuth();
+    const decoded = await adminAuth.verifyIdToken(firebaseIdToken);
+    const verifiedPhone = decoded.phone_number ?? null;
+    if (!verifiedPhone) {
+      return NextResponse.json(
+        { error: "Телефон не подтвержден" },
+        { status: 400 }
+      );
+    }
+    if (verifiedPhone !== phone) {
+      return NextResponse.json(
+        { error: "Номер телефона не совпадает" },
+        { status: 400 }
+      );
+    }
+
     const existing = await prisma.user.findFirst({
       where: {
         OR: [
           email ? { email } : undefined,
-          phone ? { phone } : undefined,
+          { phone: verifiedPhone },
         ].filter(Boolean) as any,
       },
       select: { id: true },
@@ -43,7 +70,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: {
         email,
-        phone,
+        phone: verifiedPhone ?? phone,
         name,
         passwordHash: hashPassword(password),
         role: "USER",
