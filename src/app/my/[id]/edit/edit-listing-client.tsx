@@ -49,6 +49,7 @@ export default function EditListingClient({ id }: { id: string }) {
   const [year, setYear] = useState("");
   const [price, setPrice] = useState("");
   const [mileage, setMileage] = useState("");
+  const [engineVolume, setEngineVolume] = useState("");
 
   const [registration, setRegistration] = useState("");
   const [gearbox, setGearbox] = useState("");
@@ -175,6 +176,7 @@ export default function EditListingClient({ id }: { id: string }) {
           setYear(String(item.year ?? ""));
           setPrice(String(item.price ?? ""));
           setMileage(String(item.mileage ?? ""));
+          setEngineVolume(item.engineVolume ?? "");
           setRegistration(item.registration ?? "");
           setGearbox(item.gearbox ?? "");
           setDrive(item.drive ?? "");
@@ -265,6 +267,10 @@ export default function EditListingClient({ id }: { id: string }) {
       return setError("Цена должна быть числом больше 0");
     if (!Number.isFinite(mileageNum) || mileageNum < 0)
       return setError("Пробег должен быть числом 0 или больше");
+    const engineVolumeValue = engineVolume.trim().replace(",", ".");
+    if (engineVolumeValue && !/^\d+(\.\d{1,2})?$/.test(engineVolumeValue)) {
+      return setError("Объем двигателя: например 1.6");
+    }
     if (photos.length > 10) return setError("Максимум 10 фото");
 
     setLoading(true);
@@ -281,6 +287,7 @@ export default function EditListingClient({ id }: { id: string }) {
         city: city || null,
         phone: normalizedPhone || null,
         description: description || null,
+        engineVolume: engineVolumeValue || null,
       };
 
       const r = await fetch(`/api/my/listings/${encodeURIComponent(id)}`, {
@@ -438,6 +445,21 @@ export default function EditListingClient({ id }: { id: string }) {
             <div>
               <div className="mb-1 text-sm font-medium">Пробег (км) *</div>
               <Input value={mileage} onChange={(e) => setMileage(e.target.value)} />
+            </div>
+
+            <div>
+              <div className="mb-1 text-sm font-medium">Объем двигателя (л)</div>
+              <Input
+                value={engineVolume}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(",", ".").replace(/[^\d.]/g, "");
+                  const [intPart, ...rest] = cleaned.split(".");
+                  const normalized = rest.length ? `${intPart}.${rest.join("")}` : intPart;
+                  setEngineVolume(normalized.slice(0, 6));
+                }}
+                placeholder="2.0"
+                inputMode="decimal"
+              />
             </div>
 
             <div>

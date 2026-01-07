@@ -13,6 +13,7 @@ type Listing = {
   price: number;
   currency: string;
   mileage: number;
+  engineVolume?: string | null;
   city: string | null;
   createdAt?: string;
   coverImageUrl: string | null;

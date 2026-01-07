@@ -1,6 +1,6 @@
 "use client";
 
-import { Gauge, Heart, MapPin } from "lucide-react";
+import { Droplet, Gauge, Heart, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { MouseEvent } from "react";
@@ -15,6 +15,7 @@ type ListingCardItem = {
   price: number;
   currency: string;
   mileage: number;
+  engineVolume?: string | null;
   city: string | null;
   createdAt?: string;
   coverImageUrl: string | null;
@@ -36,6 +37,9 @@ export function ListingCard({ item, onFavoriteChange }: ListingCardProps) {
   const priceLabel = `${item.price.toLocaleString()} ${
     item.currency === "RUB" ? "₽" : item.currency
   }`;
+  const engineLabel = item.engineVolume ? `${item.engineVolume} л` : null;
+  const metaBase =
+    "inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[11px] font-medium";
 
   async function toggleFavorite(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -127,20 +131,26 @@ export function ListingCard({ item, onFavoriteChange }: ListingCardProps) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-lg font-semibold text-slate-900">{item.title}</div>
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
+              <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span className={`${metaBase} border-slate-200/70 bg-white/70 text-slate-600`}>
                   <MapPin className="h-3.5 w-3.5" />
                   {item.city ?? "-"}
                 </span>
-                <span className="inline-flex items-center gap-1">
+                <span className={`${metaBase} border-slate-200/70 bg-white/70 text-slate-600`}>
                   <Gauge className="h-3.5 w-3.5" />
                   {item.mileage.toLocaleString()} км
                 </span>
+                {engineLabel && (
+                  <span className={`${metaBase} border-primary/30 bg-primary/10 text-primary/80`}>
+                    <Droplet className="h-3.5 w-3.5" />
+                    {engineLabel}
+                  </span>
+                )}
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-xl font-semibold">{priceLabel}</div>
+              <div className="text-xl font-semibold text-slate-900">{priceLabel}</div>
             </div>
           </div>
         </div>

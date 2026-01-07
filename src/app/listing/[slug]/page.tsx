@@ -110,14 +110,17 @@ export default async function ListingPage({ params }: PageProps) {
   const specs = [
     { label: "Год", value: `${listing.year} г.` },
     { label: "Пробег", value: mileageLabel },
-    { label: "Город", value: listing.city ?? "—" },
+    { label: "Город", value: listing.city ?? "-" },
     { label: "Учет", value: registrationLabel(listing.registration) },
+    {
+      label: "Объем",
+      value: listing.engineVolume ? `${listing.engineVolume} л` : "",
+    },
   ];
 
   const optionalSpecs = [
     { label: "КПП", value: mapLabel(GEARBOX_LABELS, listing.gearbox) },
     { label: "Привод", value: mapLabel(DRIVE_LABELS, listing.drive) },
-    { label: "Объем", value: listing.engineVolume ?? "" },
     { label: "VIN", value: listing.vin ?? "" },
   ].filter((item) => item.value);
 

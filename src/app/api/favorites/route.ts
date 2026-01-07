@@ -17,6 +17,7 @@ export async function GET() {
             price: true,
             currency: true,
             mileage: true,
+            engineVolume: true,
             city: true,
             createdAt: true,
             isTop: true,

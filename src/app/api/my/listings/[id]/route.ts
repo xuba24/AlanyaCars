@@ -23,6 +23,7 @@ export async function GET(
         price: true,
         currency: true,
         mileage: true,
+        engineVolume: true,
         registration: true,
         gearbox: true,
         drive: true,
@@ -97,6 +98,19 @@ export async function PATCH(
     if (Number.isFinite(Number(body.year))) data.year = Number(body.year);
     if (Number.isFinite(Number(body.price))) data.price = Number(body.price);
     if (Number.isFinite(Number(body.mileage))) data.mileage = Number(body.mileage);
+    if (body.engineVolume !== undefined) {
+      const engineVolumeRaw = body.engineVolume ? String(body.engineVolume) : "";
+      const engineVolume = engineVolumeRaw.trim()
+        ? engineVolumeRaw.trim().replace(",", ".")
+        : null;
+      if (engineVolume && !/^\d+(\.\d{1,2})?$/.test(engineVolume)) {
+        return NextResponse.json(
+          { error: "Некорректный объем двигателя" },
+          { status: 400 }
+        );
+      }
+      data.engineVolume = engineVolume;
+    }
     if (body.registration !== undefined) {
       if (registrationRaw && !registration) {
         return NextResponse.json(

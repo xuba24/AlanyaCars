@@ -40,6 +40,7 @@ export default function NewListingClient() {
   const [year, setYear] = useState("");
   const [price, setPrice] = useState("");
   const [mileage, setMileage] = useState("");
+  const [engineVolume, setEngineVolume] = useState("");
 
   const [registration, setRegistration] = useState("");
   const [gearbox, setGearbox] = useState("");
@@ -210,6 +211,10 @@ export default function NewListingClient() {
       return setError("Цена должна быть числом больше 0");
     if (!Number.isFinite(mileageNum) || mileageNum < 0)
       return setError("Пробег должен быть числом 0 или больше");
+    const engineVolumeValue = engineVolume.trim().replace(",", ".");
+    if (engineVolumeValue && !/^\d+(\.\d{1,2})?$/.test(engineVolumeValue)) {
+      return setError("Объем двигателя: например 1.6");
+    }
     if (!gearbox) return setError("Выбери КПП");
     if (!drive) return setError("Выбери привод");
     if (photos.length > 10) return setError("Максимум 10 фото");
@@ -229,6 +234,7 @@ export default function NewListingClient() {
         city: city || null,
         phone: normalizedPhone || null,
         description: description || null,
+        engineVolume: engineVolumeValue || null,
       };
 
       // ✅ ВАЖНО: правильный endpoint
@@ -351,6 +357,21 @@ export default function NewListingClient() {
         <div>
           <div className="mb-1 text-sm font-medium">Пробег (км) *</div>
           <Input value={mileage} onChange={(e) => setMileage(e.target.value)} placeholder="95000" />
+        </div>
+
+        <div>
+          <div className="mb-1 text-sm font-medium">Объем двигателя (л)</div>
+          <Input
+            value={engineVolume}
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(",", ".").replace(/[^\d.]/g, "");
+              const [intPart, ...rest] = cleaned.split(".");
+              const normalized = rest.length ? `${intPart}.${rest.join("")}` : intPart;
+              setEngineVolume(normalized.slice(0, 6));
+            }}
+            placeholder="2.0"
+            inputMode="decimal"
+          />
         </div>
 
         <div>

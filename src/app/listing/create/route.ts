@@ -23,6 +23,10 @@ export async function POST(req: Request) {
     const mileage = Number(body.mileage);
 
     const city = body.city ? String(body.city) : null;
+    const engineVolumeRaw = body.engineVolume ? String(body.engineVolume) : "";
+    const engineVolume = engineVolumeRaw.trim()
+      ? engineVolumeRaw.trim().replace(",", ".")
+      : null;
     const registrationRaw = body.registration ? String(body.registration) : null;
     const allowedRegistrations = new Set(["NOT_CLEARED", "RF", "RSO"]);
     const registration = registrationRaw && allowedRegistrations.has(registrationRaw)
@@ -48,6 +52,12 @@ export async function POST(req: Request) {
     }
     if (!Number.isFinite(mileage) || mileage < 0) {
       return NextResponse.json({ error: "Некорректный пробег" }, { status: 400 });
+    }
+    if (engineVolume && !/^\d+(\.\d{1,2})?$/.test(engineVolume)) {
+      return NextResponse.json(
+        { error: "Некорректный объем двигателя" },
+        { status: 400 }
+      );
     }
     if (registrationRaw && !registration) {
       return NextResponse.json({ error: "Некорректный учет" }, { status: 400 });
@@ -96,6 +106,7 @@ export async function POST(req: Request) {
         city,
         phone,
         description,
+        engineVolume,
 
         gearbox,
         drive,
