@@ -59,18 +59,18 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
   const active = images[Math.min(activeIndex, images.length - 1)];
 
   return (
-    <div className="w-full max-w-full space-y-3">
-      <div className="relative w-full max-w-full overflow-hidden rounded-2xl border bg-muted">
+    <div className="w-full max-w-full min-w-0 space-y-3">
+      <div className="relative w-full max-w-full overflow-hidden rounded-3xl border border-white/50 bg-white/35 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.6)] backdrop-blur-xl">
         <div
           ref={scrollerRef}
           onScroll={handleScroll}
-          className="flex w-full max-w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-smooth"
+          className="flex w-full max-w-full min-w-0 snap-x snap-mandatory overflow-x-auto overscroll-x-contain overflow-y-hidden scroll-smooth"
         >
           {images.map((img, idx) => (
             <button
               key={`${img.url}-${idx}`}
               type="button"
-              className="relative aspect-[4/3] w-full min-w-full flex-none snap-start bg-muted"
+              className="relative aspect-[4/3] w-full min-w-full flex-none snap-start overflow-hidden bg-muted"
               onClick={() => {
                 setActiveIndex(idx);
                 setOpen(true);
@@ -117,7 +117,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
       </div>
 
       {images.length > 1 && (
-        <div className="flex w-full max-w-full gap-2 overflow-x-auto pb-1">
+        <div className="flex w-full max-w-full min-w-0 gap-2 overflow-x-auto pb-1">
           {images.map((img, idx) => (
             <button
               key={`${img.url}-thumb-${idx}`}
