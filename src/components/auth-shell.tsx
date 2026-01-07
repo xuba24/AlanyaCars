@@ -16,13 +16,11 @@ export function AuthShell({ title, subtitle, active, children }: AuthShellProps)
       <div className="absolute -right-16 bottom-6 h-52 w-52 rounded-full bg-indigo-200/50 blur-3xl" />
 
       <div className="relative rounded-3xl border border-white/70 bg-white/85 p-6 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.55)] backdrop-blur">
-        <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/60">
-          <img
-            src="/alanyacars-logo.png"
-            alt="AlanyaCars"
-            className="h-20 w-20 rounded-full object-contain"
-          />
-        </div>
+        <img
+          src="/alanyacars-logo.png"
+          alt="AlanyaCars"
+          className="mx-auto h-20 w-20 rounded-full object-contain"
+        />
         <div className="mt-4 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">{title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
