@@ -70,7 +70,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
             <button
               key={`${img.url}-${idx}`}
               type="button"
-              className="relative aspect-video w-full min-w-full flex-none snap-center bg-muted sm:aspect-[4/3]"
+              className="relative aspect-video w-full min-w-full flex-none snap-start bg-muted sm:aspect-[4/3]"
               onClick={() => {
                 setActiveIndex(idx);
                 setOpen(true);
@@ -80,7 +80,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
               <img
                 src={img.url}
                 alt={title}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-cover object-center"
               />
               {img.isCover && (
                 <span className="absolute left-3 top-3 rounded-full bg-black/65 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
