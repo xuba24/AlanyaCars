@@ -19,6 +19,16 @@ type Make = { id: string; name: string; slug: string };
 type Model = { id: string; name: string; slug: string; makeId: string };
 type ListingImage = { id: string; url: string; isCover: boolean };
 
+const CITY_OPTIONS = ["ЦХИНВАЛ", "ВЛАДИКАВКАЗ"];
+
+function toPhoneDigits(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("7") && digits.length === 11) {
+    return digits.slice(1);
+  }
+  return digits.slice(0, 10);
+}
+
 function safeJsonParse(text: string) {
   try {
     return { ok: true as const, data: JSON.parse(text) };
@@ -44,7 +54,7 @@ export default function EditListingClient({ id }: { id: string }) {
   const [gearbox, setGearbox] = useState("");
   const [drive, setDrive] = useState("");
   const [city, setCity] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneDigits, setPhoneDigits] = useState("");
   const [description, setDescription] = useState("");
 
   const [existingImages, setExistingImages] = useState<ListingImage[]>([]);
@@ -59,6 +69,10 @@ export default function EditListingClient({ id }: { id: string }) {
   const yearNum = useMemo(() => Number(year), [year]);
   const priceNum = useMemo(() => Number(price), [price]);
   const mileageNum = useMemo(() => Number(mileage), [mileage]);
+  const normalizedPhone = useMemo(() => {
+    if (!phoneDigits) return "";
+    return `+7${phoneDigits}`;
+  }, [phoneDigits]);
 
   useEffect(() => {
     const urls = photos.map((f) => URL.createObjectURL(f));
@@ -165,7 +179,7 @@ export default function EditListingClient({ id }: { id: string }) {
           setGearbox(item.gearbox ?? "");
           setDrive(item.drive ?? "");
           setCity(item.city ?? "");
-          setPhone(item.phone ?? "");
+          setPhoneDigits(toPhoneDigits(item.phone ?? ""));
           setDescription(item.description ?? "");
           setExistingImages(item.images ?? []);
         }
@@ -265,7 +279,7 @@ export default function EditListingClient({ id }: { id: string }) {
         gearbox: gearbox || null,
         drive: drive || null,
         city: city || null,
-        phone: phone || null,
+        phone: normalizedPhone || null,
         description: description || null,
       };
 
@@ -428,7 +442,22 @@ export default function EditListingClient({ id }: { id: string }) {
 
             <div>
               <div className="mb-1 text-sm font-medium">Город</div>
-              <Input value={city} onChange={(e) => setCity(e.target.value)} />
+              <Select
+                value={city || "__"}
+                onValueChange={(v) => setCity(v === "__" ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Выбери город" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__">Выбрать</SelectItem>
+                  {CITY_OPTIONS.map((cityOption) => (
+                    <SelectItem key={cityOption} value={cityOption}>
+                      {cityOption}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -443,7 +472,7 @@ export default function EditListingClient({ id }: { id: string }) {
                 <SelectContent>
                   <SelectItem value="__">Не указано</SelectItem>
                   <SelectItem value="NOT_CLEARED">Не растаможен</SelectItem>
-                  <SelectItem value="RF">RF</SelectItem>
+                  <SelectItem value="RF">RUS</SelectItem>
                   <SelectItem value="RSO">RSO</SelectItem>
                 </SelectContent>
               </Select>
@@ -462,9 +491,6 @@ export default function EditListingClient({ id }: { id: string }) {
                   <SelectItem value="__">Выбрать</SelectItem>
                   <SelectItem value="MANUAL">Механика</SelectItem>
                   <SelectItem value="AUTOMATIC">Автомат</SelectItem>
-                  <SelectItem value="CVT">Вариатор</SelectItem>
-                  <SelectItem value="AMT">Робот</SelectItem>
-                  <SelectItem value="OTHER">Другое</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -490,7 +516,20 @@ export default function EditListingClient({ id }: { id: string }) {
 
             <div className="md:col-span-2">
               <div className="mb-1 text-sm font-medium">Телефон</div>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <div className="flex items-center gap-2">
+                <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+                  +7
+                </div>
+                <Input
+                  value={phoneDigits}
+                  onChange={(e) => {
+                    const next = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    setPhoneDigits(next);
+                  }}
+                  placeholder="9000000000"
+                  inputMode="numeric"
+                />
+              </div>
             </div>
 
             <div className="md:col-span-2">

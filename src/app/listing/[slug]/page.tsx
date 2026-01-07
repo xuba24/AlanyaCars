@@ -28,7 +28,7 @@ const DRIVE_LABELS = {
 
 const REGISTRATION_LABELS = {
   NOT_CLEARED: "Не растаможен",
-  RF: "RF",
+  RF: "RUS",
   RSO: "RSO",
 } as const;
 

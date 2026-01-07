@@ -23,6 +23,8 @@ import { PrimaryButton } from "@/components/market/primary-button";
 type Make = { id: string; name: string; slug: string };
 type Model = { id: string; name: string; slug: string; makeId: string };
 
+const CITY_OPTIONS = ["ЦХИНВАЛ", "ВЛАДИКАВКАЗ"];
+
 type FilterPanelProps = {
   dealType: string;
   makeId: string;
@@ -193,7 +195,22 @@ export function FilterPanel({
       <div className="space-y-3">
         <SectionTitle icon={MapPin} label="Город" />
         <div>
-          <Input value={city} onChange={(e) => onParamChange("city", e.target.value)} />
+          <Select
+            value={city || "__"}
+            onValueChange={(v) => onParamChange("city", v === "__" ? "" : v)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Выбери город" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__">Любой</SelectItem>
+              {CITY_OPTIONS.map((cityOption) => (
+                <SelectItem key={cityOption} value={cityOption}>
+                  {cityOption}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -210,7 +227,7 @@ export function FilterPanel({
             <SelectContent>
               <SelectItem value="__">Не указано</SelectItem>
               <SelectItem value="NOT_CLEARED">Не растаможен</SelectItem>
-              <SelectItem value="RF">RF</SelectItem>
+              <SelectItem value="RF">RUS</SelectItem>
               <SelectItem value="RSO">RSO</SelectItem>
             </SelectContent>
           </Select>

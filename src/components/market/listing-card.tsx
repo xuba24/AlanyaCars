@@ -34,7 +34,7 @@ export function ListingCard({ item, onFavoriteChange }: ListingCardProps) {
   const [favorite, setFavorite] = useState(Boolean(item.isFavorite));
   const [saving, setSaving] = useState(false);
   const priceLabel = `${item.price.toLocaleString()} ${
-    item.currency === "RUB" ? "?" : item.currency
+    item.currency === "RUB" ? "₽" : item.currency
   }`;
 
   async function toggleFavorite(e: MouseEvent<HTMLButtonElement>) {

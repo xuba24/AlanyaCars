@@ -61,6 +61,31 @@ async function main() {
     });
   }
 
+  const ladaName = "Lada Автоваз";
+  const ladaSlug = slugify(ladaName);
+  const lada = await prisma.make.upsert({
+    where: { slug: ladaSlug },
+    update: { name: ladaName },
+    create: { name: ladaName, slug: ladaSlug },
+  });
+  const ladaModels = [
+    "Granta",
+    "Vesta",
+    "Niva",
+    "Largus",
+    "XRAY",
+    "Kalina",
+    "Priora",
+  ];
+  await prisma.model.createMany({
+    data: ladaModels.map((name) => ({
+      makeId: lada.id,
+      name,
+      slug: slugify(name),
+    })),
+    skipDuplicates: true,
+  });
+
   // Тестовый пользователь (owner)
   const user = await prisma.user.upsert({
     where: { phone: "+70000000000" },

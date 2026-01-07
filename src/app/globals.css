@@ -79,7 +79,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
     font-family: "Manrope", "Segoe UI", sans-serif;
     background-color: #b7c9d7;
   }
@@ -93,6 +93,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    overflow-x: hidden;
   }
 
   @media (max-width: 420px) {

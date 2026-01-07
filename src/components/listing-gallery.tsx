@@ -59,18 +59,18 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
   const active = images[Math.min(activeIndex, images.length - 1)];
 
   return (
-    <div className="space-y-3">
-      <div className="relative overflow-hidden rounded-2xl border bg-muted">
+    <div className="w-full max-w-full space-y-3">
+      <div className="relative w-full max-w-full overflow-hidden rounded-2xl border bg-muted">
         <div
           ref={scrollerRef}
           onScroll={handleScroll}
-          className="flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+          className="flex w-full max-w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-smooth"
         >
           {images.map((img, idx) => (
             <button
               key={`${img.url}-${idx}`}
               type="button"
-              className="relative min-w-full w-full snap-center aspect-video sm:aspect-[4/3]"
+              className="relative aspect-video w-full min-w-full flex-none snap-center bg-muted sm:aspect-[4/3]"
               onClick={() => {
                 setActiveIndex(idx);
                 setOpen(true);
@@ -80,7 +80,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
               <img
                 src={img.url}
                 alt={title}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
               {img.isCover && (
                 <span className="absolute left-3 top-3 rounded-full bg-black/65 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
@@ -117,7 +117,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex w-full max-w-full gap-2 overflow-x-auto pb-1">
           {images.map((img, idx) => (
             <button
               key={`${img.url}-thumb-${idx}`}
@@ -175,7 +175,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
           <img
             src={active?.url ?? images[0].url}
             alt={title}
-            className="max-h-[85vh] w-auto max-w-[90vw] rounded-2xl"
+            className="h-auto max-h-[85vh] w-auto max-w-[90vw] rounded-2xl object-contain"
           />
         </div>
       )}
