@@ -1,9 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AuthStatus } from "@/components/auth-status";
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  if (pathname === "/login" || pathname === "/register") return null;
+
   return (
     <header className="sticky top-3 z-30">
       <div className="rounded-2xl border bg-white/85 px-4 py-3 shadow-sm backdrop-blur">
