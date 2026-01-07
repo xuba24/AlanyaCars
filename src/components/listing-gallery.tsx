@@ -70,7 +70,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
             <button
               key={`${img.url}-${idx}`}
               type="button"
-              className="relative aspect-video w-full min-w-full flex-none snap-start bg-muted sm:aspect-[4/3]"
+              className="relative aspect-[4/3] w-full min-w-full flex-none snap-start bg-muted"
               onClick={() => {
                 setActiveIndex(idx);
                 setOpen(true);

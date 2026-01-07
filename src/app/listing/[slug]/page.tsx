@@ -137,7 +137,7 @@ export default async function ListingPage({ params }: PageProps) {
 
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-6">
-          <div className="rounded-2xl border bg-white/80 p-3 shadow-sm">
+          <div className="overflow-hidden rounded-2xl border bg-white/80 shadow-sm">
             <ListingGallery
               images={listing.images.map((img) => ({
                 url: img.url,
