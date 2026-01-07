@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Lock, Mail, Phone, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 
 export default function RegisterClient() {
   const router = useRouter();
@@ -55,24 +56,41 @@ export default function RegisterClient() {
   }
 
   return (
-    <Card className="p-4 space-y-3">
+    <div className="space-y-4">
       {error && (
-        <div className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm">
+        <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-3 text-sm">
           {error}
         </div>
       )}
-      <div>
-        <div className="mb-1 text-sm font-medium">Имя</div>
-        <Input value={name} onChange={(e) => setName(e.target.value)} />
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Имя</div>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Как к вам обращаться"
+            className="h-11 rounded-xl bg-white/80 pl-10 shadow-sm"
+          />
+        </div>
       </div>
-      <div>
-        <div className="mb-1 text-sm font-medium">Email</div>
-        <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Email (необязательно)</div>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="mail@example.com"
+            className="h-11 rounded-xl bg-white/80 pl-10 shadow-sm"
+          />
+        </div>
       </div>
-      <div>
-        <div className="mb-1 text-sm font-medium">Телефон</div>
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Телефон</div>
         <div className="flex items-center gap-2">
-          <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+          <div className="flex h-11 items-center gap-2 rounded-xl border bg-white/80 px-3 text-sm font-medium shadow-sm">
+            <Phone className="h-4 w-4 text-muted-foreground" />
             +7
           </div>
           <Input
@@ -83,19 +101,34 @@ export default function RegisterClient() {
             }}
             placeholder="9000000000"
             inputMode="numeric"
+            className="h-11 rounded-xl bg-white/80 shadow-sm"
           />
         </div>
         <div className="text-xs text-muted-foreground">
           Номер: +7 и 10 цифр.
         </div>
       </div>
-      <div>
-        <div className="mb-1 text-sm font-medium">Пароль</div>
-        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Пароль</div>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="h-11 rounded-xl bg-white/80 pl-10 shadow-sm"
+          />
+        </div>
       </div>
-      <Button onClick={submit} disabled={loading}>
+      <Button onClick={submit} disabled={loading} className="h-11 w-full rounded-xl">
         {loading ? "Создаём..." : "Зарегистрироваться"}
       </Button>
-    </Card>
+      <div className="text-center text-xs text-muted-foreground">
+        Уже есть аккаунт?{" "}
+        <Link className="font-medium text-sky-700 hover:text-sky-900" href="/login">
+          Войти
+        </Link>
+      </div>
+    </div>
   );
 }

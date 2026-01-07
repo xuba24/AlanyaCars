@@ -1,15 +1,14 @@
 import LoginClient from "./login-client";
+import { AuthShell } from "@/components/auth-shell";
 
 export default function Page() {
   return (
-    <div className="mx-auto max-w-md">
-      <h1 className="text-2xl font-semibold">Вход</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Войди, чтобы создавать объявления.
-      </p>
-      <div className="mt-4">
-        <LoginClient />
-      </div>
-    </div>
+    <AuthShell
+      title="Добро пожаловать"
+      subtitle="Войди, чтобы управлять объявлениями."
+      active="login"
+    >
+      <LoginClient />
+    </AuthShell>
   );
 }
