@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { ListingStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireSessionUser } from "@/lib/auth";
 
@@ -8,14 +9,16 @@ export async function GET(req: Request) {
     const isAdmin = user.role === "ADMIN";
     const { searchParams } = new URL(req.url);
     const statusParam = searchParams.get("status");
-    const allowedStatuses = new Set([
+    const allowedStatuses: ReadonlySet<ListingStatus> = new Set([
       "DRAFT",
       "PENDING_REVIEW",
       "ACTIVE",
       "ARCHIVED",
       "REJECTED",
     ]);
-    const status = statusParam && allowedStatuses.has(statusParam) ? statusParam : null;
+    const status = allowedStatuses.has(statusParam as ListingStatus)
+      ? (statusParam as ListingStatus)
+      : null;
     const items = await prisma.listing.findMany({
       where: {
         ...(isAdmin ? {} : { ownerUserId: user.id }),
