@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUserIdFromCookies, requireUserId } from "@/lib/auth";
 
@@ -67,7 +68,7 @@ export async function GET(req: Request) {
   if (city) where.city = city;
   if (registration) where.registration = registration;
 
-  const orderBy =
+  const orderBy: Prisma.ListingOrderByWithRelationInput =
     ord === "price_asc"
       ? { price: "asc" }
       : ord === "price_desc"
