@@ -37,9 +37,18 @@ export async function POST(req: Request) {
     const description = String(body?.description ?? "").trim();
     const car = (body?.car ?? {}) as CarContext;
 
-    if (!process.env.AI_GATEWAY_API_KEY) {
+    const rawKey = process.env.AI_GATEWAY_API_KEY ?? "";
+    const apiKey = rawKey.trim();
+
+    if (!apiKey) {
       return NextResponse.json(
         { error: "AI_GATEWAY_API_KEY is missing" },
+        { status: 500 }
+      );
+    }
+    if (/[^\x20-\x7E]/.test(apiKey)) {
+      return NextResponse.json(
+        { error: "AI_GATEWAY_API_KEY contains non-ASCII characters" },
         { status: 500 }
       );
     }
@@ -57,7 +66,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.AI_GATEWAY_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: "openai/gpt-4o-mini",
