@@ -53,9 +53,7 @@ export default function NewListingClient() {
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const [error, setError] = useState<string | null>(null);
-  const [aiError, setAiError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
 
   const yearNum = useMemo(() => Number(year), [year]);
   const priceNum = useMemo(() => Number(price), [price]);
@@ -170,56 +168,6 @@ export default function NewListingClient() {
       cancelled = true;
     };
   }, [makeId]);
-
-  async function improveDescription() {
-    setAiError(null);
-    setAiLoading(true);
-
-    try {
-      const makeName = makes.find((m) => m.id === makeId)?.name ?? "";
-      const modelName = models.find((m) => m.id === modelId)?.name ?? "";
-
-      const r = await fetch("/api/ai/description", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          description,
-          car: {
-            make: makeName,
-            model: modelName,
-            year: yearNum || null,
-            price: priceNum || null,
-            mileage: mileageNum || null,
-            engineVolume: engineVolume || null,
-            gearbox: gearbox || null,
-            drive: drive || null,
-            city: city || null,
-            registration: registration || null,
-          },
-        }),
-      });
-
-      const text = await r.text();
-      const parsed = safeJsonParse(text);
-
-      if (!r.ok || !parsed.ok) {
-        throw new Error(
-          `/api/ai/description: ${r.status} ${text.slice(0, 220)}`
-        );
-      }
-
-      const improved = parsed.data?.text;
-      if (!improved) {
-        throw new Error("AI не вернул текст описания");
-      }
-
-      setDescription(String(improved));
-    } catch (e: any) {
-      setAiError(e?.message ?? "Ошибка генерации описания");
-    } finally {
-      setAiLoading(false);
-    }
-  }
 
   async function uploadOne(file: File) {
     const fd = new FormData();
@@ -519,23 +467,7 @@ export default function NewListingClient() {
         </div>
 
         <div className="md:col-span-2">
-          <div className="mb-1 flex items-center justify-between gap-2 text-sm font-medium">
-            <span>Описание</span>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={improveDescription}
-              disabled={aiLoading}
-            >
-              {aiLoading ? "Улучшаем..." : "Улучшить описание"}
-            </Button>
-          </div>
-          {aiError && (
-            <div className="mb-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-2 text-xs">
-              {aiError}
-            </div>
-          )}
+          <div className="mb-1 text-sm font-medium">Описание</div>
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
